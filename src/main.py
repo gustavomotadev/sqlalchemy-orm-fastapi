@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from locacao.repositorios.repositorio_base import RepositorioBase
 from locacao.util.util import Utilidades
 from locacao.repositorios.repositorio_locadora import RepositorioLocadora
-from locacao.modelos.pessoa import Pessoa
+from locacao.repositorios.repositorio_pessoa import RepositorioPessoa
 from locacao.modelos.usuario import Usuario
 from locacao.modelos.veiculo import Veiculo
 
@@ -12,7 +12,7 @@ def main():
     engine = sa.create_engine(Utilidades.obter_connection_string(), echo=False)
 
     repo_locadora = RepositorioLocadora(engine)
-    repo_pessoa = RepositorioBase(engine, Pessoa)
+    repo_pessoa = RepositorioPessoa(engine)
     repo_usuario = RepositorioBase(engine, Usuario)
     repo_veiculo = RepositorioBase(engine, Veiculo)
 

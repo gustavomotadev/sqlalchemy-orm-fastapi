@@ -3,6 +3,7 @@ from sqlalchemy.engine import Engine
 from typing import List, Optional
 from locacao.modelos.locadora import Locadora
 from locacao.repositorios.repositorio_base import RepositorioBase
+from locacao.util.util import Utilidades
 
 class RepositorioLocadora(RepositorioBase):
     
@@ -29,6 +30,5 @@ class RepositorioLocadora(RepositorioBase):
                 endereco: Optional[str] = None) -> List[Locadora]:
         argumentos = {'uuid': uuid, 'nome': nome, 'horario_abertura': horario_abertura,
                       'horario_fechamento': horario_fechamento, 'endereco': endereco}
-        filtrados = {k: v for k, v in argumentos.items() if v is not None}
-        return super().filtrar(**filtrados)
+        return super().filtrar(**Utilidades.remover_none_dict(argumentos))
         

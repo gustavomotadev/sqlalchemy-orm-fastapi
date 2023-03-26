@@ -1,6 +1,7 @@
 from dotenv import dotenv_values
 from uuid import uuid1
 from bcrypt import gensalt, hashpw
+from typing import Dict
 
 class Utilidades(object):
 
@@ -20,5 +21,9 @@ class Utilidades(object):
     @staticmethod
     def hash_senha(senha: str, salt: str):
         return hashpw(senha, salt)
+    
+    @staticmethod
+    def remover_none_dict(dic: Dict):
+        return {k: v for k, v in dic.items() if v is not None}
     
     
