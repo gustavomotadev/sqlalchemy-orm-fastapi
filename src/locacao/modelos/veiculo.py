@@ -7,6 +7,7 @@ class Veiculo(ModeloBase):
 
     uuid: orm.Mapped[str] = orm.mapped_column(sa.String(36), primary_key=True)
     uuid_condutor: orm.Mapped[str] = orm.mapped_column(sa.ForeignKey("pessoa.uuid"))
+    placa: orm.Mapped[str] = orm.mapped_column(sa.String(7), unique=True)
     modelo: orm.Mapped[str] = orm.mapped_column(sa.String(50))
     tipo: orm.Mapped[str] = orm.mapped_column(sa.String(30))
     combustivel: orm.Mapped[str] = orm.mapped_column(sa.String(30))
@@ -17,6 +18,6 @@ class Veiculo(ModeloBase):
 
     def __repr__(self) -> str:
         return (f"Veiculo(uuid={self.uuid}, uuid_condutor={self.uuid_condutor}, " + 
-                f"modelo={self.modelo}, tipo={self.tipo}, " + 
+                f"placa={self.placa}, modelo={self.modelo}, tipo={self.tipo}, " + 
                 f"combustivel={self.combustivel}, capacidade={self.capacidade}, " + 
                 f"cor={self.cor})")

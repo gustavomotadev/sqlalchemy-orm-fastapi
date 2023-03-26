@@ -20,6 +20,7 @@ CREATE TABLE pessoa (
 CREATE TABLE veiculo (
   uuid CHAR(36) PRIMARY KEY,
   uuid_condutor CHAR(36) NOT NULL,
+  placa CHAR(7) UNIQUE NOT NULL,
   modelo VARCHAR(30) NOT NULL,
   tipo VARCHAR(30) NOT NULL,
   combustivel VARCHAR(30) NOT NULL,
@@ -34,7 +35,7 @@ CREATE TABLE veiculo (
 CREATE TABLE usuario (
   uuid CHAR(36) PRIMARY KEY,
   uuid_pessoa CHAR(36) UNIQUE NOT NULL,
-  login VARCHAR(20) UNIQUE NOT NULL,
+  acesso VARCHAR(20) UNIQUE NOT NULL,
   salt_senha BINARY(29) NOT NULL,
   hash_senha BINARY(60) NOT NULL,
   FOREIGN KEY (uuid_pessoa)

@@ -7,7 +7,7 @@ class Usuario(ModeloBase):
 
     uuid: orm.Mapped[str] = orm.mapped_column(sa.String(36), primary_key=True)
     uuid_pessoa: orm.Mapped[str] = orm.mapped_column(sa.ForeignKey("pessoa.uuid"))
-    login: orm.Mapped[str] = orm.mapped_column(sa.String(20))
+    acesso: orm.Mapped[str] = orm.mapped_column(sa.String(20))
     salt_senha: orm.Mapped[str] = orm.mapped_column(sa.BINARY(29))
     hash_senha: orm.Mapped[str] = orm.mapped_column(sa.BINARY(60))
 
@@ -15,4 +15,4 @@ class Usuario(ModeloBase):
 
     def __repr__(self) -> str:
         return (f"Pessoa(uuid={self.uuid}, uuid_pessoa={self.uuid_pessoa}, " + 
-                f"login={self.login}, salt_senha=*, hash_senha=*)")
+                f"acesso={self.acesso}, salt_senha=*, hash_senha=*)")
