@@ -1,4 +1,3 @@
-import datetime
 from sqlalchemy.engine import Engine
 from typing import List, Optional
 from locacao.modelos.pessoa import Pessoa

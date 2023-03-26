@@ -4,7 +4,7 @@ from locacao.repositorios.repositorio_base import RepositorioBase
 from locacao.util.util import Utilidades
 from locacao.repositorios.repositorio_locadora import RepositorioLocadora
 from locacao.repositorios.repositorio_pessoa import RepositorioPessoa
-from locacao.modelos.usuario import Usuario
+from locacao.repositorios.repositorio_usuario import RepositorioUsuario
 from locacao.modelos.veiculo import Veiculo
 
 def main():
@@ -13,7 +13,7 @@ def main():
 
     repo_locadora = RepositorioLocadora(engine)
     repo_pessoa = RepositorioPessoa(engine)
-    repo_usuario = RepositorioBase(engine, Usuario)
+    repo_usuario = RepositorioUsuario(engine)
     repo_veiculo = RepositorioBase(engine, Veiculo)
 
     repo_locadora.inserir(uuid=Utilidades.uuid36(), nome='Nossa Locadora', 
