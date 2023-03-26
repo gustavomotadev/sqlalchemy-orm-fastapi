@@ -2,7 +2,7 @@ import datetime
 import sqlalchemy as sa
 from locacao.repositorios.repositorio_base import RepositorioBase
 from locacao.util.util import Utilidades
-from locacao.modelos.locadora import Locadora
+from locacao.repositorios.repositorio_locadora import RepositorioLocadora
 from locacao.modelos.pessoa import Pessoa
 from locacao.modelos.usuario import Usuario
 from locacao.modelos.veiculo import Veiculo
@@ -11,7 +11,7 @@ def main():
 
     engine = sa.create_engine(Utilidades.obter_connection_string(), echo=False)
 
-    repo_locadora = RepositorioBase(engine, Locadora)
+    repo_locadora = RepositorioLocadora(engine)
     repo_pessoa = RepositorioBase(engine, Pessoa)
     repo_usuario = RepositorioBase(engine, Usuario)
     repo_veiculo = RepositorioBase(engine, Veiculo)
@@ -62,6 +62,8 @@ def main():
     print(repo_pessoa.listar_todos())
     print(repo_usuario.listar_todos())
     print(repo_veiculo.listar_todos())
+
+    print(repo_locadora.filtrar(nome='Nossa Locadora'))
 
 if __name__ == '__main__':
     main()
