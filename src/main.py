@@ -9,7 +9,7 @@ from locacao.modelos.veiculo import Veiculo
 
 def main():
 
-    engine = sa.create_engine(Utilidades.obter_connection_string(), echo=False)
+    engine = sa.create_engine(Utilidades.obter_connection_string(), echo=True)
 
     repo_locadora = RepositorioLocadora(engine)
     repo_pessoa = RepositorioPessoa(engine)
@@ -40,10 +40,10 @@ def main():
     
     tentativa = ('jmatos', b'123456')
     #implementar função para trazer apenas salt
-    salt_temp = repo_usuario.filtrar(acesso=tentativa[0])[0].salt_senha
+    salt_temp = repo_usuario.obter_salt(tentativa[0])
     hash_temp = Utilidades.hash_senha(tentativa[1], salt_temp)
     #implementar função para não trazer salt nem hash
-    usuario = repo_usuario.filtrar(acesso='jmatos', hash_senha=hash_temp)
+    usuario = repo_usuario.obter_por_credencial(tentativa[0], salt_temp, hash_temp)
     print(usuario)
 
     uuid_temp = repo_pessoa.filtrar(cnh='00000000000')[0].uuid

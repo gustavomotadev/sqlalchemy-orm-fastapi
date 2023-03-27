@@ -14,5 +14,5 @@ class Usuario(ModeloBase):
     pessoa: orm.Mapped["Pessoa"] = orm.relationship(back_populates="usuario")
 
     def __repr__(self) -> str:
-        return (f"Pessoa(uuid={self.uuid}, uuid_pessoa={self.uuid_pessoa}, " + 
+        return (f"Usuario(uuid={self.uuid}, uuid_pessoa={self.uuid_pessoa}, " + 
                 f"acesso={self.acesso}, salt_senha=*, hash_senha=*)")
