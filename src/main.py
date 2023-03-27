@@ -1,20 +1,19 @@
 import datetime
 import sqlalchemy as sa
-from locacao.repositorios.repositorio_base import RepositorioBase
 from locacao.util.util import Utilidades
 from locacao.repositorios.repositorio_locadora import RepositorioLocadora
 from locacao.repositorios.repositorio_pessoa import RepositorioPessoa
 from locacao.repositorios.repositorio_usuario import RepositorioUsuario
-from locacao.modelos.veiculo import Veiculo
+from locacao.repositorios.repositorio_veiculo import RepositorioVeiculo
 
 def main():
 
-    engine = sa.create_engine(Utilidades.obter_connection_string(), echo=True)
+    engine = sa.create_engine(Utilidades.obter_connection_string(), echo=False)
 
     repo_locadora = RepositorioLocadora(engine)
     repo_pessoa = RepositorioPessoa(engine)
     repo_usuario = RepositorioUsuario(engine)
-    repo_veiculo = RepositorioBase(engine, Veiculo)
+    repo_veiculo = RepositorioVeiculo(engine)
 
     repo_locadora.inserir(uuid=Utilidades.uuid36(), nome='Nossa Locadora', 
                  horario_abertura=datetime.time(8),
@@ -39,10 +38,8 @@ def main():
                          hash_senha=Utilidades.hash_senha(b'654321', salt_temp))
     
     tentativa = ('jmatos', b'123456')
-    #implementar função para trazer apenas salt
     salt_temp = repo_usuario.obter_salt(tentativa[0])
     hash_temp = Utilidades.hash_senha(tentativa[1], salt_temp)
-    #implementar função para não trazer salt nem hash
     usuario = repo_usuario.obter_por_credencial(tentativa[0], salt_temp, hash_temp)
     print(usuario)
 
