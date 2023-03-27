@@ -1,0 +1,2 @@
+class ControladorBase(object):
+    pass
