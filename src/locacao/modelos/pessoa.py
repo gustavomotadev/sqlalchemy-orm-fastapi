@@ -11,8 +11,8 @@ class Pessoa(ModeloBase):
     tipo: orm.Mapped[str] = orm.mapped_column(sa.String(30))
     nome: orm.Mapped[str] = orm.mapped_column(sa.String(100))
 
-    usuario: orm.Mapped["Usuario"] = orm.relationship(back_populates="pessoa")
-    veiculos: orm.Mapped[List["Veiculo"]] = orm.relationship(back_populates="pessoa")
+    # usuario: orm.Mapped["Usuario"] = orm.relationship(back_populates="pessoa")
+    # veiculos: orm.Mapped[List["Veiculo"]] = orm.relationship(back_populates="pessoa")
 
     def __repr__(self) -> str:
         return (f"Pessoa(uuid={self.uuid}, cnh={self.cnh}, " + 

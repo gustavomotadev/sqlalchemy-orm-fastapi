@@ -11,7 +11,7 @@ class Usuario(ModeloBase):
     salt_senha: orm.Mapped[bytes] = orm.mapped_column(sa.BINARY(29))
     hash_senha: orm.Mapped[bytes] = orm.mapped_column(sa.BINARY(60))
 
-    pessoa: orm.Mapped["Pessoa"] = orm.relationship(back_populates="usuario")
+    # pessoa: orm.Mapped["Pessoa"] = orm.relationship(back_populates="usuario")
 
     def __repr__(self) -> str:
         return (f"Usuario(uuid={self.uuid}, uuid_pessoa={self.uuid_pessoa}, " + 

@@ -15,7 +15,7 @@ class ControladorAluno(ControladorBase):
 
     async def listar_alunos(self):
         return self.alunos
-    listar_alunos.rota = '/alunos/'
+    listar_alunos.rota = '/aluno/'
     listar_alunos.metodos = ['GET']
 
     async def consultar_aluno(self, id: int):
