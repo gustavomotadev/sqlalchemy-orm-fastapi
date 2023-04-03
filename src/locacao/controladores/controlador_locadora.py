@@ -14,19 +14,20 @@ class ControladorLocadora(ControladorBase):
             self.remover_locadora, self.alterar_horarios_locadora]
 
     async def listar_locadoras(self, 
-            repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)],
-            nome: Optional[str] = None,
-            horario_abertura: Optional[str] = None,
-            horario_fechamento: Optional[str] = None,
-            endereco: Optional[str] = None,
-            ) -> List[VMLocadora]:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)],
+        nome: Optional[str] = None,
+        horario_abertura: Optional[str] = None,
+        horario_fechamento: Optional[str] = None,
+        endereco: Optional[str] = None) -> List[VMLocadora]:
+
         encontrados = repo.filtrar(nome=nome, horario_abertura=horario_abertura, 
             horario_fechamento=horario_fechamento, endereco=endereco)
         return list(map(VMLocadora.converter_modelo, encontrados))
     listar_locadoras.rota = {'path': '/locadora/', 'methods': ['GET']}
 
     async def consultar_locadora(self, uuid: str, 
-            repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             return VMLocadora.converter_modelo(encontrados[0])
@@ -35,7 +36,8 @@ class ControladorLocadora(ControladorBase):
     consultar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['GET']}
 
     async def cadastrar_locadora(self, vm: VMLocadoraSemUUID, 
-            repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+
         uuid = Utilidades.uuid36()
         inserido = repo.inserir(uuid, vm.nome, vm.horario_abertura,
             vm.horario_fechamento, vm.endereco)
@@ -44,7 +46,8 @@ class ControladorLocadora(ControladorBase):
         'status_code': status.HTTP_201_CREATED}
 
     async def alterar_locadora(self, uuid: str, vm: VMLocadoraSemUUID, 
-            repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             alterado = encontrados[0]
@@ -59,7 +62,8 @@ class ControladorLocadora(ControladorBase):
     alterar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['PUT']}
 
     async def remover_locadora(self, uuid: str, 
-            repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             repo.remover(encontrados[0])
@@ -69,7 +73,8 @@ class ControladorLocadora(ControladorBase):
     remover_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['DELETE']}
 
     async def alterar_horarios_locadora(self, uuid: str, vm: VMLocadoraHorarios, 
-            repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             alterado = encontrados[0]

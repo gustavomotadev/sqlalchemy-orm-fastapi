@@ -37,5 +37,17 @@ class VMVeiculoSemUUID(BaseModel):
     def validar_placa(placa: str) -> str: 
         return Utilidades.validar_placa(placa)
     
+class VMVeiculoSemUUIDs(BaseModel):
+    placa: str = Field(min_length=7, max_length=7)
+    modelo: str = Field(max_length=30)
+    tipo: str = Field(max_length=30)
+    combustivel: str = Field(max_length=30)
+    capacidade: int = Field(ge=0)
+    cor: str = Field(max_length=30)
+    
+    @validator('placa')
+    def validar_placa(placa: str) -> str: 
+        return Utilidades.validar_placa(placa)
+    
 class VMVeiculoCondutor(BaseModel):
     uuid_condutor: UUID1

@@ -13,16 +13,17 @@ class ControladorPessoa(ControladorBase):
             self.cadastrar_pessoa, self.alterar_pessoa, self.remover_pessoa]
 
     async def listar_pessoas(self, 
-            repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
-            cnh: Optional[str] = None, tipo: Optional[str] = None,
-            nome: Optional[str] = None
-            ) -> List[VMPessoa]:
+        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
+        cnh: Optional[str] = None, tipo: Optional[str] = None,
+        nome: Optional[str] = None) -> List[VMPessoa]:
+        
         encontrados = repo.filtrar(cnh=cnh, tipo=tipo, nome=nome)
         return list(map(VMPessoa.converter_modelo, encontrados))
     listar_pessoas.rota = {'path': '/pessoa/', 'methods': ['GET']}
 
     async def consultar_pessoa(self, uuid: str, 
-            repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             return VMPessoa.converter_modelo(encontrados[0])
@@ -31,7 +32,8 @@ class ControladorPessoa(ControladorBase):
     consultar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['GET']}
 
     async def cadastrar_pessoa(self, vm: VMPessoaSemUUID, 
-            repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+
         uuid = Utilidades.uuid36()
         inserido = repo.inserir(uuid, vm.cnh, vm.tipo, vm.nome)
         return VMPessoa.converter_modelo(inserido)
@@ -39,7 +41,8 @@ class ControladorPessoa(ControladorBase):
         'status_code': status.HTTP_201_CREATED}
 
     async def alterar_pessoa(self, uuid: str, vm: VMPessoaSemUUID, 
-            repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             alterado = encontrados[0]
@@ -53,7 +56,8 @@ class ControladorPessoa(ControladorBase):
     alterar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['PUT']}
 
     async def remover_pessoa(self, uuid: str, 
-            repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        
         encontrados = repo.filtrar(uuid=uuid)
         if encontrados:
             repo.remover(encontrados[0])
