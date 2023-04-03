@@ -32,9 +32,10 @@ class ControladorPessoa(ControladorBase):
     consultar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['GET']}
 
     async def cadastrar_pessoa(self, vm: VMPessoaSemUUID, 
-        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
+        repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
+        util: Annotated[Utilidades, Depends(Utilidades)]) -> VMPessoa:
 
-        uuid = Utilidades.uuid36()
+        uuid = util.uuid36()
         inserido = repo.inserir(uuid, vm.cnh, vm.tipo, vm.nome)
         return VMPessoa.converter_modelo(inserido)
     cadastrar_pessoa.rota = {'path': '/pessoa/', 'methods': ['POST'], 

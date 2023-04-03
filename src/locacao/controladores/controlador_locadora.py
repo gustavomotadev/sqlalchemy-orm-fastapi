@@ -36,9 +36,10 @@ class ControladorLocadora(ControladorBase):
     consultar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['GET']}
 
     async def cadastrar_locadora(self, vm: VMLocadoraSemUUID, 
-        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
+        repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)], 
+        util: Annotated[Utilidades, Depends(Utilidades)]) -> VMLocadora:
 
-        uuid = Utilidades.uuid36()
+        uuid = util.uuid36()
         inserido = repo.inserir(uuid, vm.nome, vm.horario_abertura,
             vm.horario_fechamento, vm.endereco)
         return VMLocadora.converter_modelo(inserido)

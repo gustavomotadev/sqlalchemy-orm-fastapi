@@ -39,13 +39,14 @@ class ControladorVeiculo(ControladorBase):
 
     async def cadastrar_veiculo(self, vm: VMVeiculoSemUUID, 
         repo_veiculo: Annotated[RepositorioVeiculo, Depends(repositorio_veiculo)], 
-        repo_pessoa: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMVeiculo:
+        repo_pessoa: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)], 
+        util: Annotated[Utilidades, Depends(Utilidades)]) -> VMVeiculo:
         
         condutor_encontrado = repo_pessoa.filtrar(uuid=str(vm.uuid_condutor))
         if not condutor_encontrado:
             raise HTTPException(400)
         
-        uuid = Utilidades.uuid36()
+        uuid = util.uuid36()
         inserido = repo_veiculo.inserir(uuid, vm.uuid_condutor, vm.placa, 
             vm.modelo, vm.tipo, vm.combustivel, vm.capacidade, vm.cor)
         return VMVeiculo.converter_modelo(inserido)
