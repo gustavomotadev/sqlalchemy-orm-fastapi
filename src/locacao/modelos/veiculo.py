@@ -16,6 +16,19 @@ class Veiculo(ModeloBase):
 
     # pessoa: orm.Mapped["Pessoa"] = orm.relationship(back_populates="veiculos")
 
+    def __init__(self, uuid: str, uuid_condutor: str, placa: str, 
+            modelo: str, tipo: str, combustivel: str, capacidade: int, 
+            cor: str):
+        super().__init__()
+        self.uuid = uuid
+        self.uuid_condutor = uuid_condutor
+        self.placa = placa
+        self.modelo = modelo
+        self.tipo = tipo
+        self.combustivel = combustivel
+        self.capacidade = capacidade
+        self.cor = cor
+
     def __repr__(self) -> str:
         return (f"Veiculo(uuid={self.uuid}, uuid_condutor={self.uuid_condutor}, " + 
                 f"placa={self.placa}, modelo={self.modelo}, tipo={self.tipo}, " + 

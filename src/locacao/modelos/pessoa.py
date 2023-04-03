@@ -14,6 +14,13 @@ class Pessoa(ModeloBase):
     # usuario: orm.Mapped["Usuario"] = orm.relationship(back_populates="pessoa")
     # veiculos: orm.Mapped[List["Veiculo"]] = orm.relationship(back_populates="pessoa")
 
+    def __init__(self, uuid: str, cnh: str, tipo: str, nome: str):
+        super().__init__()
+        self.uuid = uuid
+        self.cnh = cnh
+        self.tipo = tipo
+        self.nome = nome
+
     def __repr__(self) -> str:
         return (f"Pessoa(uuid={self.uuid}, cnh={self.cnh}, " + 
                 f"tipo={self.tipo}, nome={self.nome})")
