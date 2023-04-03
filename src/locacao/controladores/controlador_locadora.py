@@ -10,7 +10,7 @@ class ControladorLocadora(ControladorBase):
 
     def __init__(self) -> None:        
         self.endpoints = [self.listar_locadoras, self.consultar_locadora,
-            self.cadastrar_locadora, self. alterar_locadora, 
+            self.cadastrar_locadora, self.alterar_locadora, 
             self.remover_locadora, self.alterar_horarios_locadora]
 
     async def listar_locadoras(self, 
