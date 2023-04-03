@@ -1,16 +1,10 @@
 from datetime import time
-from uuid import uuid1
 from pydantic import BaseModel, Field, UUID1, validator
 from locacao.modelos.locadora import Locadora
-
-def _validar_horario(horario: time) -> time:
-    if horario < time(5) or horario > time(22) or int(horario.minute) % 15 != 0:
-        raise ValueError
-    else:
-        return horario
+from locacao.util.util import Utilidades
 
 class VMLocadora(BaseModel):
-    uuid: UUID1 = Field(default_factory=uuid1)
+    uuid: UUID1
     nome: str = Field(max_length=100)
     horario_abertura: time
     horario_fechamento: time
@@ -18,7 +12,7 @@ class VMLocadora(BaseModel):
 
     @validator('horario_abertura', 'horario_fechamento')
     def validar_horario(horario: time) -> time: 
-        return _validar_horario(horario)
+        return Utilidades.validar_horario(horario)
 
     @staticmethod
     def converter_modelo(modelo: Locadora):
@@ -35,7 +29,7 @@ class VMLocadoraSemUUID(BaseModel):
 
     @validator('horario_abertura', 'horario_fechamento')
     def validar_horario(horario: time) -> time:
-        return _validar_horario(horario)
+        return Utilidades.validar_horario(horario)
 
 class VMLocadoraHorarios(BaseModel):
     horario_abertura: time
@@ -43,4 +37,4 @@ class VMLocadoraHorarios(BaseModel):
 
     @validator('horario_abertura', 'horario_fechamento')
     def validar_horario(horario: time) -> time:
-        return _validar_horario(horario)
+        return Utilidades.validar_horario(horario)
