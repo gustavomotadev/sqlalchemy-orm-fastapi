@@ -19,7 +19,8 @@ class Utilidades(object):
         ambiente = dotenv_values()
         return {'algoritmo_chave': ambiente.get('KEY_ALGORITHM'), 
             'chave_privada': ambiente.get('PRIVATE_KEY'), 
-            'chave_publica': ambiente.get('PUBLIC_KEY')}
+            'chave_publica': ambiente.get('PUBLIC_KEY'),
+            'validade_token': ambiente.get('TOKEN_EXP_TIME')}
 
     @staticmethod
     def uuid36() -> str:
