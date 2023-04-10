@@ -4,12 +4,12 @@ from locacao.repositorios.repositorio_locadora import RepositorioLocadora
 from locacao.repositorios.repositorio_pessoa import RepositorioPessoa
 from locacao.repositorios.repositorio_veiculo import RepositorioVeiculo
 from locacao.repositorios.repositorio_usuario import RepositorioUsuario
-from locacao.autenticacao.autenticador import Autenticador
+from locacao.autenticacao.autenticacao import Autenticador
 from fastapi.security import OAuth2PasswordBearer
 
 _autenticador = Autenticador(**Utilidades.obter_chaves())
 
-esquema_oauth2 = OAuth2PasswordBearer(tokenUrl="/autenticacao/login")
+esquema_oauth2 = OAuth2PasswordBearer(tokenUrl="v1/autenticacao/login")
 
 _sqlalchemy_engine = create_engine(Utilidades.obter_connection_string(), echo=False)
 

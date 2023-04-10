@@ -20,7 +20,7 @@ class Utilidades(object):
         return {'algoritmo_chave': ambiente.get('KEY_ALGORITHM'), 
             'chave_privada': ambiente.get('PRIVATE_KEY'), 
             'chave_publica': ambiente.get('PUBLIC_KEY'),
-            'validade_token': ambiente.get('TOKEN_EXP_TIME')}
+            'validade_token': int(ambiente.get('TOKEN_EXP_TIME')) if ambiente.get('TOKEN_EXP_TIME') else None}
 
     @staticmethod
     def uuid36() -> str:

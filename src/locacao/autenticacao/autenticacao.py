@@ -32,3 +32,12 @@ class Autenticador(object):
         exp = iat + timedelta(minutes=validade_minutos)
         payload = {**dados, 'iat': iat, 'exp': exp}
         token = jwt.encode(payload, self._chave_privada, self._algoritmo_chave)
+        return token
+    
+    def validar_token_jwt(self, token: str) -> dict | None:
+        try:
+            dados = jwt.decode(token, self._chave_publica, self._algoritmo_chave, 
+                options={"require": ["iat", "exp"]})
+            return dados
+        except InvalidTokenError:
+            return None
