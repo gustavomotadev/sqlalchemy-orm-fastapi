@@ -1,10 +1,11 @@
-print('singletons.py start')
-
 from sqlalchemy import create_engine
 from locacao.util.util import Utilidades
 from locacao.repositorios.repositorio_locadora import RepositorioLocadora
 from locacao.repositorios.repositorio_pessoa import RepositorioPessoa
 from locacao.repositorios.repositorio_veiculo import RepositorioVeiculo
+from locacao.autenticacao.autenticador import Autenticador
+
+_autenticador = Autenticador(**Utilidades.obter_chaves())
 
 _sqlalchemy_engine = create_engine(Utilidades.obter_connection_string(), echo=False)
 
@@ -16,4 +17,4 @@ repositorio_locadora = lambda: _repositorio_locadora
 repositorio_pessoa = lambda: _repositorio_pessoa
 repositorio_veiculo = lambda: _repositorio_veiculo
 
-print('singletons.py end')
+autenticador = lambda: _autenticador

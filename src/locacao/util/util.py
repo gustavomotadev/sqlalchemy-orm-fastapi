@@ -2,7 +2,6 @@ import datetime
 import re
 from dotenv import dotenv_values
 from uuid import uuid1
-from bcrypt import gensalt, hashpw
 from typing import Dict
 
 class Utilidades(object):
@@ -11,24 +10,23 @@ class Utilidades(object):
     _regex_placa = re.compile(r'[A-Z]{3}[0-9][0-9A-Z][0-9]{2}')
 
     @staticmethod
-    def obter_connection_string():
+    def obter_connection_string() -> str:
         ambiente = dotenv_values()
         return f"{ambiente.get('SQLA_DIALECT')}+{ambiente.get('SQLA_DRIVER')}://{ambiente.get('DB_USER')}:{ambiente.get('DB_PASSWORD')}@{ambiente.get('DB_HOST')}:{ambiente.get('DB_PORT')}/{ambiente.get('DB_NAME')}"
     
     @staticmethod
-    def uuid36():
+    def obter_chaves() -> Dict[str, str | None]:
+        ambiente = dotenv_values()
+        return {'algoritmo_chave': ambiente.get('KEY_ALGORITHM'), 
+            'chave_privada': ambiente.get('PRIVATE_KEY'), 
+            'chave_publica': ambiente.get('PUBLIC_KEY')}
+
+    @staticmethod
+    def uuid36() -> str:
         return str(uuid1())
     
     @staticmethod
-    def obter_salt():
-        return gensalt()
-
-    @staticmethod
-    def hash_senha(senha: str, salt: str):
-        return hashpw(senha, salt)
-    
-    @staticmethod
-    def remover_none_dict(dic: Dict):
+    def remover_none_dict(dic: Dict) -> Dict:
         return {k: v for k, v in dic.items() if v is not None}
     
     @staticmethod
