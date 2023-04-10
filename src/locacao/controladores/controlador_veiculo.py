@@ -47,7 +47,7 @@ class ControladorVeiculo(ControladorBase):
             raise HTTPException(400)
         
         uuid = util.uuid36()
-        inserido = repo_veiculo.inserir(uuid, vm.uuid_condutor, vm.placa, 
+        inserido = repo_veiculo.inserir(uuid, str(vm.uuid_condutor), vm.placa, 
             vm.modelo, vm.tipo, vm.combustivel, vm.capacidade, vm.cor)
         return VMVeiculo.converter_modelo(inserido)
     cadastrar_veiculo.rota = {'path': '/veiculo/', 'methods': ['POST'], 
@@ -89,12 +89,12 @@ class ControladorVeiculo(ControladorBase):
         veiculo_encontrado = repo_veiculo.filtrar(uuid=uuid)
         if veiculo_encontrado:
 
-            condutor_encontrado = repo_pessoa.filtrar(uuid=vm.uuid_condutor)
+            condutor_encontrado = repo_pessoa.filtrar(uuid=str(vm.uuid_condutor))
             if not condutor_encontrado:
                 raise HTTPException(400)
 
             alterado = veiculo_encontrado[0]
-            alterado.uuid_condutor = vm.uuid_condutor
+            alterado.uuid_condutor = str(vm.uuid_condutor)
             repo_veiculo.alterar(alterado)
             return VMVeiculo.converter_modelo(alterado)
         else:

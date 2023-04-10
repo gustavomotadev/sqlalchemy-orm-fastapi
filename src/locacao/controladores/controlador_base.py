@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from locacao.autenticacao.autenticacao import Autenticador
 from locacao.dependencias.singletons import autenticador, esquema_oauth2
-from locacao.viewmodels.vms_autenticacao import VMUsuarioLogado
+from locacao.viewmodels.vms_autenticacao import VMUsuario
 
 class ControladorBase(object):
 
@@ -14,10 +14,10 @@ class ControladorBase(object):
     @classmethod
     async def obter_usuario_logado(cls, 
         aut: Annotated[Autenticador, Depends(autenticador)], 
-        token: Annotated[str, Depends(esquema_oauth2)]) -> VMUsuarioLogado:
+        token: Annotated[str, Depends(esquema_oauth2)]) -> VMUsuario:
 
         dados = aut.validar_token_jwt(token)
         if dados is None:
             raise cls.ErroAutenticacao(detalhe='Não foi possível validar o token')
         
-        return VMUsuarioLogado(**dados)
+        return VMUsuario(**dados)

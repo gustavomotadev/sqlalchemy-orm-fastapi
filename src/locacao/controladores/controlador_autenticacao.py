@@ -2,16 +2,39 @@ from fastapi import HTTPException, status, Depends, Response
 from typing import List, Optional, Annotated
 from locacao.viewmodels.vms_autenticacao import *
 from locacao.repositorios.repositorio_usuario import RepositorioUsuario
+from locacao.repositorios.repositorio_pessoa import RepositorioPessoa
 from locacao.controladores.controlador_base import ControladorBase
 from locacao.util.util import Utilidades
-from locacao.dependencias.singletons import repositorio_usuario, autenticador
+from locacao.dependencias.singletons import repositorio_usuario, repositorio_pessoa, autenticador
 from fastapi.security import OAuth2PasswordRequestForm
 from locacao.autenticacao.autenticacao import Autenticador
 
 class ControladorAutenticacao(ControladorBase):
 
     def __init__(self) -> None:        
-        self.endpoints = [self.login, self.perfil, self.validar]
+        self.endpoints = [self.cadastro, self.login, self.perfil, self.validar]
+
+    async def cadastro(self, aut: Annotated[Autenticador, Depends(autenticador)], 
+        repo_usuario: Annotated[RepositorioUsuario, Depends(repositorio_usuario)],
+        repo_pessoa: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
+        dados_cadastro: VMCadastroUsuario) -> VMUsuario:
+
+        filtrado = repo_pessoa.filtrar(uuid=str(dados_cadastro.uuid_pessoa))
+
+        if not filtrado:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, 
+                detail='Pessoa não cadastrada no sistema')
+        
+        uuid = Utilidades.uuid36()
+        salt = aut.obter_salt()
+        hash_senha = aut.obter_hash_senha(
+            dados_cadastro.senha.get_secret_value(), salt)
+        usuario = repo_usuario.inserir(uuid, str(dados_cadastro.uuid_pessoa), 
+            dados_cadastro.acesso, salt, hash_senha)
+        
+        return VMUsuario.converter_modelo(usuario)
+    cadastro.rota = {'path': '/autenticacao/cadastro', 'methods': ['POST'],
+        'status_code': status.HTTP_201_CREATED}
 
     async def login(self, aut: Annotated[Autenticador, Depends(autenticador)], 
         repo: Annotated[RepositorioUsuario, Depends(repositorio_usuario)],
@@ -35,8 +58,8 @@ class ControladorAutenticacao(ControladorBase):
     login.rota = {'path': '/autenticacao/login', 'methods': ['POST']}
 
     async def perfil(self, 
-        usuario_logado: Annotated[VMUsuarioLogado, 
-        Depends(ControladorBase.obter_usuario_logado)]) -> VMUsuarioLogado:
+        usuario_logado: Annotated[VMUsuario, 
+        Depends(ControladorBase.obter_usuario_logado)]) -> VMUsuario:
 
         return usuario_logado
     perfil.rota = {'path': '/autenticacao/perfil', 'methods': ['GET']}

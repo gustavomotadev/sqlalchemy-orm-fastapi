@@ -3,11 +3,14 @@ import re
 from dotenv import dotenv_values
 from uuid import uuid1
 from typing import Dict
+from pydantic import SecretStr
 
 class Utilidades(object):
 
     _regex_cnh = re.compile(r'[0-9]{11}')
     _regex_placa = re.compile(r'[A-Z]{3}[0-9][0-9A-Z][0-9]{2}')
+    _regex_acesso = re.compile(r'[a-zA-Z][a-zA-Z0-9_]{5,19}')
+    _regex_senha = re.compile(r'[a-zA-Z0-9._?!@#$%&-+*=]{6,20}')
 
     @staticmethod
     def obter_connection_string() -> str:
@@ -76,9 +79,23 @@ class Utilidades(object):
     
     # Valida uma placa de veículo brasileira ou do Mercosul.
     @classmethod
-    def validar_placa(cls, placa):
+    def validar_placa(cls, placa: str) -> str:
 
         if re.fullmatch(cls._regex_placa, placa) is not None:
             return placa
+        else:
+            raise ValueError
+        
+    @classmethod
+    def validar_acesso(cls, acesso: str) -> str:
+        if re.fullmatch(cls._regex_acesso, acesso) is not None:
+            return acesso
+        else:
+            raise ValueError
+        
+    @classmethod
+    def validar_senha(cls, senha: SecretStr) -> SecretStr:
+        if re.fullmatch(cls._regex_senha, senha.get_secret_value()) is not None:
+            return senha
         else:
             raise ValueError
