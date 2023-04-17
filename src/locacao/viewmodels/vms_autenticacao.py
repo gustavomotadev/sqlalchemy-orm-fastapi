@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, UUID1, SecretStr, validator
-from typing import Literal
+from typing_extensions import Literal
 from locacao.util.util import Utilidades
 from locacao.modelos.usuario import Usuario
 
