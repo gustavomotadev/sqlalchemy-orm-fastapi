@@ -2,7 +2,7 @@ import datetime
 import re
 from dotenv import dotenv_values
 from uuid import uuid1
-from typing import Dict
+from typing import Dict, Union
 from pydantic import SecretStr
 
 class Utilidades(object):
@@ -18,7 +18,7 @@ class Utilidades(object):
         return f"{ambiente.get('SQLA_DIALECT')}+{ambiente.get('SQLA_DRIVER')}://{ambiente.get('DB_USER')}:{ambiente.get('DB_PASSWORD')}@{ambiente.get('DB_HOST')}:{ambiente.get('DB_PORT')}/{ambiente.get('DB_NAME')}"
     
     @staticmethod
-    def obter_chaves() -> Dict[str, str | None]:
+    def obter_chaves() -> Dict[str, Union[str, None]]:
         ambiente = dotenv_values()
         return {'algoritmo_chave': ambiente.get('KEY_ALGORITHM'), 
             'chave_privada': ambiente.get('PRIVATE_KEY'), 
@@ -30,7 +30,7 @@ class Utilidades(object):
         return str(uuid1())
     
     @staticmethod
-    def remover_none_dict(dic: Dict) -> Dict:
+    def remover_none_dict(dic: dict) -> dict:
         return {k: v for k, v in dic.items() if v is not None}
     
     @staticmethod
