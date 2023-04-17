@@ -20,7 +20,8 @@ class ControladorPessoa(ControladorBase):
         
         encontrados = repo.filtrar(cnh=cnh, tipo=tipo, nome=nome)
         return list(map(VMPessoa.converter_modelo, encontrados))
-    listar_pessoas.rota = {'path': '/pessoa/', 'methods': ['GET']}
+    listar_pessoas.rota = {'path': '/pessoa/', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
 
     async def consultar_pessoa(self, uuid: str, 
         repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
@@ -30,7 +31,8 @@ class ControladorPessoa(ControladorBase):
             return VMPessoa.converter_modelo(encontrados[0])
         else:
             raise HTTPException(404)
-    consultar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['GET']}
+    consultar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
 
     async def cadastrar_pessoa(self, vm: VMPessoaSemUUID, 
         repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
@@ -40,7 +42,8 @@ class ControladorPessoa(ControladorBase):
         inserido = repo.inserir(uuid, vm.cnh, vm.tipo, vm.nome)
         return VMPessoa.converter_modelo(inserido)
     cadastrar_pessoa.rota = {'path': '/pessoa/', 'methods': ['POST'], 
-        'status_code': status.HTTP_201_CREATED}
+        'status_code': status.HTTP_201_CREATED, 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def alterar_pessoa(self, uuid: str, vm: VMPessoaSemUUID, 
         repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
@@ -55,7 +58,8 @@ class ControladorPessoa(ControladorBase):
             return VMPessoa.converter_modelo(alterado)
         else:
             raise HTTPException(404)
-    alterar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['PUT']}
+    alterar_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['PUT'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def remover_pessoa(self, uuid: str, 
         repo: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)]) -> VMPessoa:
@@ -66,4 +70,5 @@ class ControladorPessoa(ControladorBase):
             return VMPessoa.converter_modelo(encontrados[0])
         else:
             raise HTTPException(404)
-    remover_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['DELETE']}
+    remover_pessoa.rota = {'path': '/pessoa/{uuid}', 'methods': ['DELETE'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}

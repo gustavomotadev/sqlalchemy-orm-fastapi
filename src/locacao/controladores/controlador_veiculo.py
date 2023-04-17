@@ -26,7 +26,8 @@ class ControladorVeiculo(ControladorBase):
             modelo=modelo, tipo=tipo, combustivel=combustivel, 
             capacidade=capacidade, cor=cor)
         return list(map(VMVeiculo.converter_modelo, encontrados))
-    listar_veiculos.rota = {'path': '/veiculo/', 'methods': ['GET']}
+    listar_veiculos.rota = {'path': '/veiculo/', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
 
     async def consultar_veiculo(self, uuid: str, 
         repo: Annotated[RepositorioVeiculo, Depends(repositorio_veiculo)]) -> VMVeiculo:
@@ -36,7 +37,8 @@ class ControladorVeiculo(ControladorBase):
             return VMVeiculo.converter_modelo(encontrados[0])
         else:
             raise HTTPException(404)
-    consultar_veiculo.rota = {'path': '/veiculo/{uuid}', 'methods': ['GET']}
+    consultar_veiculo.rota = {'path': '/veiculo/{uuid}', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
 
     async def cadastrar_veiculo(self, vm: VMVeiculoSemUUID, 
         repo_veiculo: Annotated[RepositorioVeiculo, Depends(repositorio_veiculo)], 
@@ -52,7 +54,8 @@ class ControladorVeiculo(ControladorBase):
             vm.modelo, vm.tipo, vm.combustivel, vm.capacidade, vm.cor)
         return VMVeiculo.converter_modelo(inserido)
     cadastrar_veiculo.rota = {'path': '/veiculo/', 'methods': ['POST'], 
-        'status_code': status.HTTP_201_CREATED}
+        'status_code': status.HTTP_201_CREATED, 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def alterar_veiculo(self, uuid: str, vm: VMVeiculoSemUUIDs, 
         repo: Annotated[RepositorioVeiculo, Depends(repositorio_veiculo)]) -> VMVeiculo:
@@ -70,7 +73,8 @@ class ControladorVeiculo(ControladorBase):
             return VMVeiculo.converter_modelo(alterado)
         else:
             raise HTTPException(404)
-    alterar_veiculo.rota = {'path': '/veiculo/{uuid}', 'methods': ['PUT']}
+    alterar_veiculo.rota = {'path': '/veiculo/{uuid}', 'methods': ['PUT'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def remover_veiculo(self, uuid: str, 
         repo: Annotated[RepositorioVeiculo, Depends(repositorio_veiculo)]) -> VMVeiculo:
@@ -81,7 +85,8 @@ class ControladorVeiculo(ControladorBase):
             return VMVeiculo.converter_modelo(encontrados[0])
         else:
             raise HTTPException(404)
-    remover_veiculo.rota = {'path': '/veiculo/{uuid}', 'methods': ['DELETE']}
+    remover_veiculo.rota = {'path': '/veiculo/{uuid}', 'methods': ['DELETE'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def alterar_condutor_veiculo(self, uuid: str, vm: VMVeiculoCondutor, 
         repo_veiculo: Annotated[RepositorioVeiculo, Depends(repositorio_veiculo)], 
@@ -100,4 +105,5 @@ class ControladorVeiculo(ControladorBase):
             return VMVeiculo.converter_modelo(alterado)
         else:
             raise HTTPException(404)
-    alterar_condutor_veiculo.rota = {'path': '/locadora/{uuid}', 'methods': ['PATCH']}
+    alterar_condutor_veiculo.rota = {'path': '/locadora/{uuid}', 'methods': ['PATCH'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}

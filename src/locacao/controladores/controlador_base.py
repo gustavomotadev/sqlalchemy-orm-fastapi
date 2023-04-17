@@ -21,3 +21,14 @@ class ControladorBase(object):
             raise cls.ErroAutenticacao(detalhe='Não foi possível validar o token')
         
         return VMUsuario(**dados)
+    
+    @classmethod
+    async def obter_colaborador_logado(cls, 
+        aut: Annotated[Autenticador, Depends(autenticador)], 
+        token: Annotated[str, Depends(esquema_oauth2)]) -> VMUsuario:
+
+        dados = aut.validar_token_jwt(token)
+        if dados is None or dados.get('tipo') != 'Colaborador':
+            raise cls.ErroAutenticacao(detalhe='É preciso ser Colaborador para utilizar essa função')
+        
+        return VMUsuario(**dados)

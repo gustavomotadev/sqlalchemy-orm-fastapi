@@ -24,7 +24,8 @@ class ControladorLocadora(ControladorBase):
         encontrados = repo.filtrar(nome=nome, horario_abertura=horario_abertura, 
             horario_fechamento=horario_fechamento, endereco=endereco)
         return list(map(VMLocadora.converter_modelo, encontrados))
-    listar_locadoras.rota = {'path': '/locadora/', 'methods': ['GET']}
+    listar_locadoras.rota = {'path': '/locadora/', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
 
     async def consultar_locadora(self, uuid: str, 
         repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
@@ -34,7 +35,8 @@ class ControladorLocadora(ControladorBase):
             return VMLocadora.converter_modelo(encontrados[0])
         else:
             raise HTTPException(404)
-    consultar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['GET']}
+    consultar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
 
     async def cadastrar_locadora(self, vm: VMLocadoraSemUUID, 
         repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)], 
@@ -45,7 +47,8 @@ class ControladorLocadora(ControladorBase):
             vm.horario_fechamento, vm.endereco)
         return VMLocadora.converter_modelo(inserido)
     cadastrar_locadora.rota = {'path': '/locadora/', 'methods': ['POST'], 
-        'status_code': status.HTTP_201_CREATED}
+        'status_code': status.HTTP_201_CREATED, 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def alterar_locadora(self, uuid: str, vm: VMLocadoraSemUUID, 
         repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
@@ -61,7 +64,8 @@ class ControladorLocadora(ControladorBase):
             return VMLocadora.converter_modelo(alterado)
         else:
             raise HTTPException(404)
-    alterar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['PUT']}
+    alterar_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['PUT'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def remover_locadora(self, uuid: str, 
         repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
@@ -72,7 +76,8 @@ class ControladorLocadora(ControladorBase):
             return VMLocadora.converter_modelo(encontrados[0])
         else:
             raise HTTPException(404)
-    remover_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['DELETE']}
+    remover_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['DELETE'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
 
     async def alterar_horarios_locadora(self, uuid: str, vm: VMLocadoraHorarios, 
         repo: Annotated[RepositorioLocadora, Depends(repositorio_locadora)]) -> VMLocadora:
@@ -86,4 +91,5 @@ class ControladorLocadora(ControladorBase):
             return VMLocadora.converter_modelo(alterado)
         else:
             raise HTTPException(404)
-    alterar_horarios_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['PATCH']}
+    alterar_horarios_locadora.rota = {'path': '/locadora/{uuid}', 'methods': ['PATCH'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}

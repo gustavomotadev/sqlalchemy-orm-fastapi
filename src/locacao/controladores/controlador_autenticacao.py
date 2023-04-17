@@ -13,16 +13,17 @@ from locacao.autenticacao.autenticacao import Autenticador
 class ControladorAutenticacao(ControladorBase):
 
     def __init__(self) -> None:        
-        self.endpoints = [self.cadastro, self.login, self.perfil, self.validar]
+        self.endpoints = [self.cadastro, self.login, self.perfil, self.logado,
+            self.colaborador_logado]
 
     async def cadastro(self, aut: Annotated[Autenticador, Depends(autenticador)], 
         repo_usuario: Annotated[RepositorioUsuario, Depends(repositorio_usuario)],
         repo_pessoa: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
         dados_cadastro: VMCadastroUsuario) -> VMUsuario:
 
-        filtrado = repo_pessoa.filtrar(uuid=str(dados_cadastro.uuid_pessoa))
+        pessoa = repo_pessoa.filtrar(uuid=str(dados_cadastro.uuid_pessoa))
 
-        if not filtrado:
+        if not pessoa:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, 
                 detail='Pessoa não cadastrada no sistema')
         
@@ -33,27 +34,31 @@ class ControladorAutenticacao(ControladorBase):
         usuario = repo_usuario.inserir(uuid, str(dados_cadastro.uuid_pessoa), 
             dados_cadastro.acesso, salt, hash_senha)
         
-        return VMUsuario.converter_modelo(usuario)
+        return VMUsuario.converter_modelo(usuario, pessoa)
     cadastro.rota = {'path': '/autenticacao/cadastro', 'methods': ['POST'],
         'status_code': status.HTTP_201_CREATED}
 
     async def login(self, aut: Annotated[Autenticador, Depends(autenticador)], 
-        repo: Annotated[RepositorioUsuario, Depends(repositorio_usuario)],
+        repo_usuario: Annotated[RepositorioUsuario, Depends(repositorio_usuario)],
+        repo_pessoa: Annotated[RepositorioPessoa, Depends(repositorio_pessoa)],
         dados_formulario: Annotated[OAuth2PasswordRequestForm, Depends()]) -> VMBearerToken:
 
-        salt_usuario = repo.obter_salt(dados_formulario.username)
+        salt_usuario = repo_usuario.obter_salt(dados_formulario.username)
 
         if salt_usuario is None:
             raise self.ErroAutenticacao("Usuário não existe")
         
         hash_senha = aut.obter_hash_senha(dados_formulario.password, salt_usuario)
-        usuario = repo.obter_por_credencial(dados_formulario.username, salt_usuario, hash_senha)
+        usuario = repo_usuario.obter_por_credencial(dados_formulario.username, salt_usuario, hash_senha)
 
         if usuario is None:
             raise self.ErroAutenticacao("Senha incorreta")
         
+        pessoa = repo_pessoa.filtrar(uuid = usuario.uuid_pessoa)[0]
+        
         token = aut.gerar_token_jwt({'uuid_usuario': usuario.uuid, 
-            'uuid_pessoa': usuario.uuid_pessoa, 'acesso': usuario.acesso})
+            'uuid_pessoa': usuario.uuid_pessoa, 'acesso': usuario.acesso,
+            'nome': pessoa.nome, 'tipo': pessoa.tipo})
         
         return VMBearerToken(access_token=token)
     login.rota = {'path': '/autenticacao/login', 'methods': ['POST']}
@@ -65,7 +70,12 @@ class ControladorAutenticacao(ControladorBase):
         return usuario_logado
     perfil.rota = {'path': '/autenticacao/perfil', 'methods': ['GET']}
 
-    async def validar(self) -> None:
+    async def logado(self) -> None:
         return Response(status_code=status.HTTP_200_OK)
-    validar.rota = {'path': '/autenticacao/validar', 'methods': ['GET'], 
+    logado.rota = {'path': '/autenticacao/logado', 'methods': ['GET'], 
         'dependencies': [Depends(ControladorBase.obter_usuario_logado)]}
+    
+    async def colaborador_logado(self) -> None:
+        return Response(status_code=status.HTTP_200_OK)
+    colaborador_logado.rota = {'path': '/autenticacao/colaborador_logado', 'methods': ['GET'], 
+        'dependencies': [Depends(ControladorBase.obter_colaborador_logado)]}
