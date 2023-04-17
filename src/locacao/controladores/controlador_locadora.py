@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status, Depends
-from typing import List, Optional, Annotated
+from typing import List, Optional
+from typing_extensions import Annotated
 from locacao.viewmodels.vms_locadora import *
 from locacao.repositorios.repositorio_locadora import RepositorioLocadora
 from locacao.controladores.controlador_base import ControladorBase

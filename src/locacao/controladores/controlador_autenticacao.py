@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status, Depends, Response
-from typing import List, Optional, Annotated
+from typing import List, Optional
+from typing_extensions import Annotated
 from locacao.viewmodels.vms_autenticacao import *
 from locacao.repositorios.repositorio_usuario import RepositorioUsuario
 from locacao.repositorios.repositorio_pessoa import RepositorioPessoa

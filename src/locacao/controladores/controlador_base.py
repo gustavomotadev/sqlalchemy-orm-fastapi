@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing_extensions import Annotated
 from fastapi import Depends, HTTPException, status
 from locacao.autenticacao.autenticacao import Autenticador
 from locacao.dependencias.singletons import autenticador, esquema_oauth2
